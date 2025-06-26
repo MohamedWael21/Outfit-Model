@@ -115,11 +115,15 @@ def initialize_api():
     compatibility_model.load_weights('outfit_compatibility_model.h5')
     
     
+    
     # Initialize optimized database
     product_db = ItemDatabase(db_path='items.db')
     
+    redis_host = os.getenv('REDIS_HOST', 'localhost')
+    redis_port = os.getenv('REDIS_PORT', 6379)
+    
     # Initialize cache (try Redis, fallback to memory)
-    cache = PrecomputedCompatibilityCache(use_redis=True)
+    cache = PrecomputedCompatibilityCache(use_redis=True, redis_host=redis_host, redis_port=redis_port)
     
     # Initialize outfit generator
     outfit_generator = FastOutfitGenerator(compatibility_model, product_db, cache)
