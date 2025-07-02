@@ -104,7 +104,7 @@ class FastOutfitGenerator:
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             future_to_candidate = {}
             
-            for candidate in candidates[:100]:  
+            for candidate in candidates[:50]:  
                 future = executor.submit(
                     self._calculate_compatibility_with_outfit,
                     candidate, current_items
