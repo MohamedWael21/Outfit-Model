@@ -120,13 +120,15 @@ def initialize_api():
     product_db = ItemDatabase(db_path='items.db')
     
     redis_host = os.getenv('REDIS_HOST', None)
+    redis_username = os.getenv('REDIS_USERNAME', None)
+    redis_password = os.getenv('REDIS_PASSWORD', None)
     redis_port = os.getenv('REDIS_PORT', None)
     
-    use_redis = redis_host is not None and redis_port is not None
+    use_redis = redis_host is not None and redis_port is not None and redis_username is not None and redis_password is not None
     
     
     # Initialize cache (try Redis, fallback to memory)
-    cache = PrecomputedCompatibilityCache(use_redis=use_redis, redis_host=redis_host, redis_port=redis_port)
+    cache = PrecomputedCompatibilityCache(use_redis=use_redis, redis_host=redis_host, redis_port=redis_port, redis_username=redis_username, redis_password=redis_password)
     
     # Initialize outfit generator
     outfit_generator = FastOutfitGenerator(compatibility_model, product_db, cache)
@@ -136,4 +138,4 @@ def initialize_api():
 
 if __name__ == '__main__':
     initialize_api()
-    app.run(debug=True, host='0.0.0.0', port=8000, threaded=True)
+    app.run(debug=True, host='0.0.0.0', port=8000)

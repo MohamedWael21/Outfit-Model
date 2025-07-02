@@ -9,7 +9,7 @@ class FastOutfitGenerator:
     def __init__(self, compatibility_model, product_database, cache=None):
         self.compatibility_model = compatibility_model
         self.product_db = product_database
-        self.cache = cache or PrecomputedCompatibilityCache()
+        self.cache = cache or PrecomputedCompatibilityCache(use_redis=False)
         
         # Pre-defined category combinations for faster outfit generation
         self.outfit_templates = {
@@ -104,7 +104,7 @@ class FastOutfitGenerator:
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             future_to_candidate = {}
             
-            for candidate in candidates[:150]:  
+            for candidate in candidates[:100]:  
                 future = executor.submit(
                     self._calculate_compatibility_with_outfit,
                     candidate, current_items

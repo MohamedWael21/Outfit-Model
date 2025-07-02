@@ -5,17 +5,20 @@ class PrecomputedCompatibilityCache:
     
     """Cache for precomputed compatibility scores"""
     
-    def __init__(self, redis_host='localhost', redis_port=6379, use_redis=False):
+    def __init__(self, redis_host=None, redis_port=None, redis_username=None, redis_password=None, use_redis=False):
         self.use_redis = use_redis
-        if use_redis:
+        if use_redis and redis_host and redis_port and redis_username and redis_password:
             try:
-                self.redis_client = redis.Redis(host=redis_host, port=redis_port, decode_responses=False)
+                self.redis_client = redis.Redis(host=redis_host, port=int(redis_port), username=redis_username, password=redis_password)
                 self.redis_client.ping()
                 print("Connected to Redis cache")
-            except:
+            except Exception as e:
+                print(f"Redis connection failed: {e}")
                 print("Redis not available, using in-memory cache")
                 self.use_redis = False
-        
+        else:
+            self.use_redis = False
+            
         if not self.use_redis:
             self.memory_cache = {}
             self.cache_lock = threading.RLock()
