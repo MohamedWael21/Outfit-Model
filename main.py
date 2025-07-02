@@ -41,6 +41,7 @@ def initialize_api():
     
     use_redis = redis_host is not None and redis_port is not None and redis_username is not None and redis_password is not None
     
+    # use_redis = False
     
     # Initialize cache (try Redis, fallback to memory)
     cache = PrecomputedCompatibilityCache(use_redis=use_redis, redis_host=redis_host, redis_port=redis_port, redis_username=redis_username, redis_password=redis_password)
