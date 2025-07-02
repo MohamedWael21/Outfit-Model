@@ -139,7 +139,7 @@ def delete_item(item_id):
 @app.route('/health')
 def health_check():
     """Health check endpoint"""
-    return jsonify({"message": "API is running"})
+    return jsonify({"message": "Outfit Model API is running"})
 
 
 if __name__ == '__main__':
