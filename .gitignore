@@ -106,6 +106,7 @@ ENV/
 
 *.sqlite3
 
+.env
 
 # System files
 .DS_Store
