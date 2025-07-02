@@ -8,7 +8,7 @@ from outfit_generator import FastOutfitGenerator
 from outfit_compatibility_model import OutfitCompatibilityModel
 from  item_database import ItemDatabase
 from feature_extractor import ClothingFeatureExtractor
-
+from flask_cors import CORS
 from cache import PrecomputedCompatibilityCache
 
 product_db = None
@@ -17,7 +17,7 @@ compatibility_model = None
 
 app = Flask(__name__)
 
-
+CORS(app)
 
 def initialize_api():
     """Initialize API components"""
