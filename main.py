@@ -18,6 +18,42 @@ compatibility_model = None
 app = Flask(__name__)
 
 
+
+def initialize_api():
+    """Initialize API components"""
+    global product_db, outfit_generator, compatibility_model
+    
+    print("Initializing API...")
+    
+    # Load your trained model
+    compatibility_model = OutfitCompatibilityModel()
+    compatibility_model.load_weights('outfit_compatibility_model.h5')
+    
+    
+    
+    # Initialize optimized database
+    product_db = ItemDatabase(db_path='items.db')
+    
+    redis_host = os.getenv('REDIS_HOST', None)
+    redis_username = os.getenv('REDIS_USERNAME', None)
+    redis_password = os.getenv('REDIS_PASSWORD', None)
+    redis_port = os.getenv('REDIS_PORT', None)
+    
+    use_redis = redis_host is not None and redis_port is not None and redis_username is not None and redis_password is not None
+    
+    
+    # Initialize cache (try Redis, fallback to memory)
+    cache = PrecomputedCompatibilityCache(use_redis=use_redis, redis_host=redis_host, redis_port=redis_port, redis_username=redis_username, redis_password=redis_password)
+    
+    # Initialize outfit generator
+    outfit_generator = FastOutfitGenerator(compatibility_model, product_db, cache)
+   
+    
+    print("API initialized successfully!")
+
+initialize_api()
+
+
 @app.route('/api/v1/outfit/generate', methods=['POST'])
 def generate_outfit():
     """API endpoint to generate outfit"""
@@ -104,38 +140,7 @@ def delete_item(item_id):
 def health_check():
     """Health check endpoint"""
     return jsonify({"message": "API is running"})
-def initialize_api():
-    """Initialize API components"""
-    global product_db, outfit_generator, compatibility_model
-    
-    print("Initializing API...")
-    
-    # Load your trained model
-    compatibility_model = OutfitCompatibilityModel()
-    compatibility_model.load_weights('outfit_compatibility_model.h5')
-    
-    
-    
-    # Initialize optimized database
-    product_db = ItemDatabase(db_path='items.db')
-    
-    redis_host = os.getenv('REDIS_HOST', None)
-    redis_username = os.getenv('REDIS_USERNAME', None)
-    redis_password = os.getenv('REDIS_PASSWORD', None)
-    redis_port = os.getenv('REDIS_PORT', None)
-    
-    use_redis = redis_host is not None and redis_port is not None and redis_username is not None and redis_password is not None
-    
-    
-    # Initialize cache (try Redis, fallback to memory)
-    cache = PrecomputedCompatibilityCache(use_redis=use_redis, redis_host=redis_host, redis_port=redis_port, redis_username=redis_username, redis_password=redis_password)
-    
-    # Initialize outfit generator
-    outfit_generator = FastOutfitGenerator(compatibility_model, product_db, cache)
-   
-    
-    print("API initialized successfully!")
+
 
 if __name__ == '__main__':
-    initialize_api()
     app.run()
