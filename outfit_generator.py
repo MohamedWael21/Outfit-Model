@@ -33,7 +33,7 @@ class FastOutfitGenerator:
         }
         
     
-    def generate_outfit_fast(self, seed_item_id, max_items=4):
+    def generate_outfit(self, seed_item_id, max_items=4):
         """Fast outfit generation using precomputed similarities and templates"""
         seed_item = self.product_db.get_item(seed_item_id)
         if not seed_item:
@@ -63,7 +63,7 @@ class FastOutfitGenerator:
             if len(outfit_items) >= max_items:
                 break
             
-            compatible_item = self._find_compatible_item_fast(
+            compatible_item = self._find_compatible_item(
                 outfit_items, category,
             )
 
@@ -76,7 +76,7 @@ class FastOutfitGenerator:
             'item_count': len(outfit_items),
         }
     
-    def _find_compatible_item_fast(self, current_items, target_category):
+    def _find_compatible_item(self, current_items, target_category):
         """Find compatible item using similarity search and caching"""
         if not current_items:
             # Just return any item from the category

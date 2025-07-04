@@ -66,7 +66,7 @@ def generate_outfit():
             return jsonify({'error': 'seed_item_id is required'}), 400
         
         # Generate outfit
-        outfit = outfit_generator.generate_outfit_fast(
+        outfit = outfit_generator.generate_outfit(
             seed_item_id, max_items=max_items
         )
 
