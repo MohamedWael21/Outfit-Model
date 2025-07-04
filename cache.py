@@ -54,17 +54,3 @@ class PrecomputedCompatibilityCache:
         else:
             with self.cache_lock:
                 self.memory_cache[key] = score
-    
-    def batch_set_compatibility(self, compatibility_data):
-        """Batch set compatibility scores"""
-        if self.use_redis:
-            pipe = self.redis_client.pipeline()
-            for (item1_id, item2_id), score in compatibility_data.items():
-                key = self._get_cache_key(item1_id, item2_id)
-                pipe.setex(key, 3600, pickle.dumps(score))
-            pipe.execute()
-        else:
-            with self.cache_lock:
-                for (item1_id, item2_id), score in compatibility_data.items():
-                    key = self._get_cache_key(item1_id, item2_id)
-                    self.memory_cache[key] = score
