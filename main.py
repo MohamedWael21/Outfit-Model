@@ -85,7 +85,7 @@ def generate_outfit():
             },
         }
         
-        return jsonify(response)
+        return jsonify(response), 201
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -130,8 +130,11 @@ def delete_item(item_id):
     try:
         if item_id is None:
             return jsonify({'error': 'id is required'}), 400
-        product_db.delete_item(int(item_id))
-        return jsonify({'message': f'Item {item_id} deleted successfully'}), 200
+        deleted = product_db.delete_item(int(item_id))
+        if deleted:
+            return jsonify({'message': f'Item {item_id} deleted successfully'}), 200
+        else:
+            return jsonify({'error': f'Item {item_id} not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

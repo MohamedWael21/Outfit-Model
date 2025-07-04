@@ -97,13 +97,15 @@ class ItemDatabase:
         print(f"Loaded {len(self.items_cache)} items into cache")
 
     def delete_item(self, item_id):
-        """Delete item from cache"""
+        """Delete item from cache and return True if deleted, False if not found"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('DELETE FROM items WHERE id = ?', (item_id,))
+        deleted = cursor.rowcount  # Number of rows deleted
         conn.commit()
         conn.close()
         self._load_cache()
+        return deleted > 0
     
     def get_item(self, item_id):
         """Get item from cache"""
